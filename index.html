@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unblocked Games</title>
+  <title>TJ's Math Site</title>
   <style>
     body {
       margin: 0;
@@ -69,7 +69,7 @@
   </style>
 </head>
 <body>
-  <header>Unblocked Games</header>
+  <header>TJ's Math Site</header>
 
   <div id="game-list">
     <h2>All Games</h2>
@@ -79,6 +79,7 @@
   <div id="game-player" style="display: none;">
     <div id="backBtn">← Back to Games</div>
     <h2 id="game-title"></h2>
+    <button id="fsBtn" style="padding:10px 16px;background:#222;border-radius:8px;cursor:pointer;margin-bottom:15px;">⛶ Fullscreen</button>
     <div id="game-frame"></div>
   </div>
 
@@ -91,6 +92,7 @@
 
     const JSON_URL = "https://raw.githubusercontent.com/swarmintelli/Unblocked-Games-CDN/main/games.json";
 
+    // Load games from the JSON
     async function loadGames() {
       try {
         const res = await fetch(JSON_URL);
@@ -111,9 +113,11 @@
 
       } catch (e) {
         gamesContainer.innerHTML = "Failed to load games.";
+        console.error(e);
       }
     }
 
+    // Open the selected game in the player area
     function openGame(game) {
       listPage.style.display = "none";
       playerPage.style.display = "block";
@@ -122,11 +126,24 @@
       window.scrollTo(0, 0);
     }
 
+    // Fullscreen helper for the game's iframe
+    function toggleFullscreen() {
+      const iframe = gameFrame.querySelector('iframe');
+      if (!iframe) return;
+      if (iframe.requestFullscreen) iframe.requestFullscreen();
+      else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+      else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen();
+    }
+
+    // Wire up UI buttons
     document.getElementById("backBtn").onclick = () => {
       playerPage.style.display = "none";
       listPage.style.display = "block";
     };
 
+    document.getElementById('fsBtn').onclick = toggleFullscreen;
+
+    // Start
     loadGames();
   </script>
 </body>
