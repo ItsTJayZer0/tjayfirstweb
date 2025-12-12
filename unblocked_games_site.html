@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unblocked Games</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+    }
+    header {
+      padding: 20px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      background: #111;
+      letter-spacing: 1px;
+    }
+    #game-list, #game-player {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    .game-card {
+      background: #1a1a1a;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .game-card:hover {
+      transform: scale(1.05);
+    }
+    .game-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
+    .game-card-title {
+      padding: 10px;
+      text-align: center;
+      font-size: 16px;
+    }
+    #backBtn {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 16px;
+      background: #222;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #backBtn:hover {
+      background: #333;
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>Unblocked Games</header>
+
+  <div id="game-list">
+    <h2>All Games</h2>
+    <div id="games" class="grid"></div>
+  </div>
+
+  <div id="game-player" style="display: none;">
+    <div id="backBtn">← Back to Games</div>
+    <h2 id="game-title"></h2>
+    <div id="game-frame"></div>
+  </div>
+
+  <script>
+    const gamesContainer = document.getElementById("games");
+    const listPage = document.getElementById("game-list");
+    const playerPage = document.getElementById("game-player");
+    const gameTitle = document.getElementById("game-title");
+    const gameFrame = document.getElementById("game-frame");
+
+    const JSON_URL = "https://raw.githubusercontent.com/swarmintelli/Unblocked-Games-CDN/main/games.json";
+
+    async function loadGames() {
+      try {
+        const res = await fetch(JSON_URL);
+        const data = await res.json();
+
+        Object.values(data).forEach(g => {
+          const card = document.createElement("div");
+          card.className = "game-card";
+
+          card.innerHTML = `
+            <img src="${g.game_image_icon}" />
+            <div class="game-card-title">${g.name}</div>
+          `;
+
+          card.onclick = () => openGame(g);
+          gamesContainer.appendChild(card);
+        });
+
+      } catch (e) {
+        gamesContainer.innerHTML = "Failed to load games.";
+      }
+    }
+
+    function openGame(game) {
+      listPage.style.display = "none";
+      playerPage.style.display = "block";
+      gameTitle.textContent = game.name;
+      gameFrame.innerHTML = game.iframe;
+      window.scrollTo(0, 0);
+    }
+
+    document.getElementById("backBtn").onclick = () => {
+      playerPage.style.display = "none";
+      listPage.style.display = "block";
+    };
+
+    loadGames();
+  </script>
+</body>
+</html>
