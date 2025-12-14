@@ -1,6 +1,3 @@
-<!--
-hello
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,60 +92,54 @@ hello
     const gameTitle = document.getElementById("game-title");
     const gameFrame = document.getElementById("game-frame");
 
-    const JSON_URL = "https://raw.githubusercontent.com/swarmintelli/Unblocked-Games-CDN/main/games.json";
-
-    // Load games from the JSON
-    async function loadGames() {
-      try {
-        const res = await fetch(JSON_URL);
-        const data = await res.json();
-
-        Object.values(data).forEach(g => {
-          const card = document.createElement("div");
-          card.className = "game-card";
-
-          card.innerHTML = `
-            <img src="${g.game_image_icon}" />
-            <div class="game-card-title">${g.name}</div>
-          `;
-
-          card.onclick = () => openGame(g);
-          gamesContainer.appendChild(card);
-        });
-
-      } catch (e) {
-        gamesContainer.innerHTML = "Failed to load games.";
-        console.error(e);
+    // Local games hosted in /games folder
+    const games = [
+      {
+        name: "Slope",
+        path: "games/slope/index.html",
+        image: "games/slope/icon.png"
+      },
+      {
+        name: "Retro Bowl",
+        path: "games/retro-bowl/index.html",
+        image: "games/retro-bowl/icon.png"
       }
+      // Add more games here
+    ];
+
+    function loadGames() {
+      games.forEach(g => {
+        const card = document.createElement("div");
+        card.className = "game-card";
+
+        card.innerHTML = `
+          <img src="${g.image}" />
+          <div class="game-card-title">${g.name}</div>
+        `;
+
+        card.onclick = () => openGame(g);
+        gamesContainer.appendChild(card);
+      });
     }
 
-    // Open the selected game in the player area
     function openGame(game) {
       listPage.style.display = "none";
       playerPage.style.display = "block";
       gameTitle.textContent = game.name;
-      gameFrame.innerHTML = game.iframe;
+
+      gameFrame.innerHTML = `
+        <iframe src="${game.path}" allowfullscreen></iframe>
+      `;
+
       window.scrollTo(0, 0);
     }
 
-    // Fullscreen helper for the game's iframe
-    function toggleFullscreen() {
-      const iframe = gameFrame.querySelector('iframe');
-      if (!iframe) return;
-      if (iframe.requestFullscreen) iframe.requestFullscreen();
-      else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
-      else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen();
-    }
-
-    // Wire up UI buttons
     document.getElementById("backBtn").onclick = () => {
       playerPage.style.display = "none";
       listPage.style.display = "block";
+      gameFrame.innerHTML = "";
     };
 
-    document.getElementById('fsBtn').onclick = toggleFullscreen;
-
-    // Start
     loadGames();
   </script>
 </body>
